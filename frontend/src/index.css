@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* RJSF Form Styling */
+.rjsf-form {
+  @apply space-y-4;
+}
+
+.rjsf-form fieldset {
+  @apply border-0 p-0 m-0;
+}
+
+.rjsf-form legend {
+  @apply text-lg font-semibold mb-4;
+}
+
+.rjsf-form .form-group {
+  @apply mb-4;
+}
+
+.rjsf-form label {
+  @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+.rjsf-form input[type="text"],
+.rjsf-form input[type="password"],
+.rjsf-form input[type="number"],
+.rjsf-form input[type="email"],
+.rjsf-form input[type="url"],
+.rjsf-form textarea,
+.rjsf-form select {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+}
+
+.rjsf-form input[type="checkbox"] {
+  @apply h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500;
+}
+
+.rjsf-form input[readonly] {
+  @apply bg-gray-100 cursor-not-allowed;
+}
+
+.rjsf-form .field-description {
+  @apply text-xs text-gray-500 mt-1;
+}
+
+.rjsf-form .text-danger {
+  @apply text-red-600 text-sm mt-1;
+}
+
+.rjsf-form .error-detail {
+  @apply text-red-600 text-sm;
+}
+
+.rjsf-form .panel-danger {
+  @apply bg-red-50 border border-red-200 rounded-md p-4 mb-4;
+}
+
+.rjsf-form .panel-danger .panel-heading {
+  @apply text-red-800 font-medium mb-2;
+}
+
+.rjsf-form .btn {
+  @apply px-4 py-2 rounded font-medium;
+}
+
+.rjsf-form .btn-info {
+  @apply bg-blue-600 text-white hover:bg-blue-700;
+}
+
+.rjsf-form .btn-danger {
+  @apply bg-red-600 text-white hover:bg-red-700;
+}
+
+.rjsf-form .array-item {
+  @apply border border-gray-200 rounded-md p-4 mb-2 bg-gray-50;
+}
+
+.rjsf-form .array-item-toolbox {
+  @apply flex gap-2 mt-2;
+}
