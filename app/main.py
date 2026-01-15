@@ -1,15 +1,20 @@
-from fastapi import FastAPI
+from pathlib import Path
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from .routers import config, subscriptions
 
-app = FastAPI(
-    title="Subscription Link Getter",
+api_app = FastAPI(
+    title="Subscription Link Getter API",
     description="API for fetching subscription links from various providers",
     version="1.0.0",
+    root_path="/api",
 )
 
-app.add_middleware(
+api_app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
@@ -17,10 +22,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(config.router)
-app.include_router(subscriptions.router)
+api_app.include_router(config.router)
+api_app.include_router(subscriptions.router)
+
+app = FastAPI(title="Subscription Link Getter")
+app.mount("/api", api_app)
+
+STATIC_PATH = Path("frontend") / "dist"
+
+app.mount(
+    "/assets",
+    StaticFiles(directory=STATIC_PATH / "assets"),
+    name="assets",
+)
 
 
-@app.get("/")
-def root():
-    return {"message": "Subscription Link Getter API", "docs": "/docs"}
+@app.get("/{full_path:path}")
+async def serve_spa(request: Request, full_path: str):
+    file_path = STATIC_PATH / full_path
+    if file_path.is_file():
+        return FileResponse(file_path)
+    return FileResponse(STATIC_PATH / "index.html")
