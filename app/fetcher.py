@@ -61,43 +61,44 @@ class SubscriptionFetcher:
 
         print(f"Found {len(labels)} labels and {len(groups)} groups")
 
-        for i, label in enumerate(labels):
-            if i >= len(groups):
+        if len(labels) != len(groups):
+            self.error_msg = f"Labels and groups count mismatch: {len(labels)} labels, {len(groups)} groups"
+            return None
+
+        names = map(lambda label: (label.text_content() or "").strip(), labels)
+        match = next(
+            filter(lambda p: name_regex.search(p[0]), zip(names, groups)), None
+        )
+        if match is None:
+            return None
+
+        name, group = match
+        url_elem = group.query_selector(self.site.subscription_url_selector)
+        if not url_elem:
+            print("  No URL element found")
+            return None
+
+        sub_url = ""
+        for retry in range(self.site.subscription_url_retry_count):
+            if self.site.subscription_url_type == "input":
+                sub_url = url_elem.input_value() or ""
+            else:
+                attr = self.site.subscription_url_attribute or "data-clipboard-text"
+                sub_url = url_elem.get_attribute(attr) or ""
+
+            if sub_url:
                 break
 
-            name = (label.text_content() or "").strip()
-            if not name_regex.search(name):
-                continue
+            if retry < self.site.subscription_url_retry_count - 1:
+                print("  Empty URL, retrying...")
+                page.wait_for_timeout(self.site.subscription_url_retry_delay_ms)
 
-            group = groups[i]
-            url_elem = group.query_selector(self.site.subscription_url_selector)
+        if not sub_url:
+            print("  Empty URL after retries")
+            return None
 
-            if not url_elem:
-                print("  No URL element found")
-                continue
-
-            sub_url = ""
-            for retry in range(self.site.subscription_url_retry_count):
-                if self.site.subscription_url_type == "input":
-                    sub_url = url_elem.input_value() or ""
-                else:
-                    attr = self.site.subscription_url_attribute or "data-clipboard-text"
-                    sub_url = url_elem.get_attribute(attr) or ""
-
-                if sub_url:
-                    break
-
-                if retry < self.site.subscription_url_retry_count - 1:
-                    page.wait_for_timeout(self.site.subscription_url_retry_delay_ms)
-
-            if not sub_url:
-                print("  Empty URL after retries")
-                continue
-
-            print(f"  Subscription URL: {sub_url}")
-            return (name, sub_url)
-
-        return None
+        print(f"  Subscription URL: {sub_url}")
+        return (name, sub_url)
 
     def _page_action(self, page: Page) -> None:
         page.wait_for_selector(
@@ -112,7 +113,6 @@ class SubscriptionFetcher:
             self._perform_login(page)
             if self.error_msg:
                 return
-
         sub_info = self._extract_subscription_url(page)
         if sub_info is None:
             self.error_msg = "No matching subscription found"
