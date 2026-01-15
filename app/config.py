@@ -65,12 +65,9 @@ class SiteConfig(BaseModel):
         10, description="Number of retries for getting subscription URL"
     )
     subscription_url_retry_delay_ms: int = Field(
-        100, description="Delay in ms between retries"
+        250, description="Delay in ms between retries"
     )
 
-    post_login_delay_ms: int = Field(
-        100, description="Delay in ms after login before extracting subscription"
-    )
     content_validation: str = Field(
         "allow-lan", description="String that must be in content"
     )

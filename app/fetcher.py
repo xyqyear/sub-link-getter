@@ -113,9 +113,6 @@ class SubscriptionFetcher:
             if self.error_msg:
                 return
 
-        if self.site.post_login_delay_ms > 0:
-            page.wait_for_timeout(self.site.post_login_delay_ms)
-
         sub_info = self._extract_subscription_url(page)
         if sub_info is None:
             self.error_msg = "No matching subscription found"
