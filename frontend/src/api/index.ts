@@ -11,8 +11,13 @@ async function handleResponse<T>(response: Response): Promise<T> {
 }
 
 export const api = {
-  getSchema: async (): Promise<Record<string, unknown>> => {
-    const response = await fetch(`${API_BASE}/config/schema`);
+  getSiteSchema: async (): Promise<Record<string, unknown>> => {
+    const response = await fetch(`${API_BASE}/config/schema/site`);
+    return handleResponse(response);
+  },
+
+  getGlobalSchema: async (): Promise<Record<string, unknown>> => {
+    const response = await fetch(`${API_BASE}/config/schema/global`);
     return handleResponse(response);
   },
 

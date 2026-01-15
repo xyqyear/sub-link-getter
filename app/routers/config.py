@@ -11,9 +11,14 @@ from ..config import (
 router = APIRouter(prefix="/config", tags=["config"])
 
 
-@router.get("/schema")
-def get_schema() -> dict:
+@router.get("/schema/site")
+def get_site_schema() -> dict:
     return SiteConfig.model_json_schema()
+
+
+@router.get("/schema/global")
+def get_global_schema() -> dict:
+    return GlobalConfig.model_json_schema()
 
 
 @router.get("/global")

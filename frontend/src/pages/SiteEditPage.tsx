@@ -22,7 +22,7 @@ export function SiteEditPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const schemaData = await api.getSchema();
+        const schemaData = await api.getSiteSchema();
         setSchema(schemaData as RJSFSchema);
 
         if (!isNew && siteId) {
